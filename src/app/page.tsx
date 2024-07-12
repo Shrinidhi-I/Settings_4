@@ -1,113 +1,274 @@
-import Image from "next/image";
+"use client";
+import React, { FC, useState } from 'react';
+import styled from 'styled-components';
+import { FaLightbulb, FaLock, FaCar, FaKey, FaSun, FaArrowLeft } from 'react-icons/fa';
+import { MdDirectionsCar, MdSecurity, MdMiscellaneousServices } from 'react-icons/md';
 
-export default function Home() {
+const Container = styled.div`
+  display: flex;
+  height: 600px;
+  width: 100%;
+  max-width: 2000px;
+  margin: 5px;
+  margin-left: 20px;
+`;
+
+const Sidebar = styled.div`
+  width: 24.5%;
+  background: #1c1c1c;
+  color: #fff;
+  padding: 20px;
+`;
+
+const MainContent = styled.div`
+  flex: 1;
+  background: #000;
+  color: #fff;
+  padding: 20px;
+  padding-left:1%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const MenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  cursor: pointer;
+  color: #aaa;
+  &:hover {
+    background: #333;
+    width: 110%;
+  }
+
+  &.highlight {
+    background: #444;
+    color: #fff;
+    width: 110%;
+  }
+
+  svg {
+    margin-right: 10px;
+  }
+`;
+
+const ContentSection = styled.div`
+  margin-bottom: 20px;
+  width: 100%;
+`;
+
+const SliderContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+const Slider = styled.input`
+  width: 75%;
+  height: 40px;
+  background: #333;
+  border: none;
+  padding: 0;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 20px;
+  appearance: none;
+  z-index: 1;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 0; /* Make the thumb invisible */
+    height: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(
+      to right,
+      #888 0%,
+      #aaa ${(props) => props.value}%,
+      #333 ${(props) => props.value}%,
+      #333 100%
+    );
+    border-radius: 20px;
+    z-index: 0;
+  }
+`;
+
+const BrightnessValue = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 38%; /* Always center horizontally */
+  transform: translate(-50%, -50%);
+  color: #000;
+  font-weight: bold;
+  z-index: 2;
+`;
+
+const SunIcon = styled(FaSun)`
+  position: absolute;
+  right: 25%; /* Adjust to place inside the slider */
+  color: #fff;
+  font-size: 20px;
+  z-index: 2;
+`;
+
+const ToggleButtonGroup = styled.div`
+  display: flex;
+  width: 75%;
+  margin-bottom: 20px;
+  border-radius: 50px;
+  overflow: hidden;
+  background: #333;
+`;
+
+const ToggleButton = styled.button<{ active: boolean }>`
+  flex: 1;
+  background: ${(props) => (props.active ? '#777' : '#333')};
+  color: #f4f4f4;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 20px;
+  cursor: pointer;
+  &:hover {
+    background: #999;
+  }
+`;
+
+const LinkButton = styled.button`
+  background: #000;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  padding-left:3%;
+  padding-top:2.9%;
+  font-size: 16px;
+  svg {
+    margin-right: 5px;
+  }
+ 
+`;
+
+const Dashboard: FC = () => {
+  const [brightness, setBrightness] = useState(10); // Initial brightness value
+  const [visibilityMode, setVisibilityMode] = useState<'day' | 'night' | 'auto'>('night');
+  const [distanceFormat, setDistanceFormat] = useState<'kilometers' | 'miles'>('miles');
+  const [temperatureFormat, setTemperatureFormat] = useState<'°F' | '°C'>('°F');
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBrightness(parseInt(e.target.value, 10));
+  };
+
+  const toggleVisibilityMode = (mode: 'day' | 'night' | 'auto') => {
+    setVisibilityMode(mode);
+  };
+
+  const toggleDistanceFormat = (format: 'kilometers' | 'miles') => {
+    setDistanceFormat(format);
+  };
+
+  const toggleTemperatureFormat = (format: '°F' | '°C') => {
+    setTemperatureFormat(format);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+    <Container>
+      <Sidebar>
+        <MenuItem><FaLightbulb /> Quick Controls</MenuItem>
+        <MenuItem><FaLightbulb /> Lights</MenuItem>
+        <MenuItem><FaLock /> Locks</MenuItem>
+        <MenuItem className="highlight"><MdDirectionsCar /> Display</MenuItem>
+        <MenuItem><FaCar /> Driving</MenuItem>
+        <MenuItem><FaKey /> Autopilot</MenuItem>
+        <MenuItem><MdSecurity /> Safety & Security</MenuItem>
+        <MenuItem><MdMiscellaneousServices /> Service</MenuItem>
+      </Sidebar>
+      <LinkButton>
+            <FaArrowLeft />
+          </LinkButton>
+      <MainContent>
+         <ContentSection>
+          <h3>Visibility Mode</h3>
+          <ToggleButtonGroup>
+            <ToggleButton
+              active={visibilityMode === 'day'}
+              onClick={() => toggleVisibilityMode('day')}
+            >
+              Day
+            </ToggleButton>
+            <ToggleButton
+              active={visibilityMode === 'night'}
+              onClick={() => toggleVisibilityMode('night')}
+            >
+              Night
+            </ToggleButton>
+            <ToggleButton
+              active={visibilityMode === 'auto'}
+              onClick={() => toggleVisibilityMode('auto')}
+            >
+              Auto
+            </ToggleButton>
+          </ToggleButtonGroup>
+         </ContentSection>
+         <ContentSection>
+          <h3><MdDirectionsCar /> Display Brightness</h3>
+          <SliderContainer>
+            <BrightnessValue value={brightness}>{brightness}%</BrightnessValue>
+            <Slider
+              type="range"
+              min="0"
+              max="100"
+              value={brightness}
+              onChange={handleSliderChange}
+              data-value={`${brightness}%`}
             />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+            <SunIcon />
+          </SliderContainer>
+         </ContentSection>
+         <ContentSection>
+          <h3>Distance Formatting</h3>
+          <ToggleButtonGroup>
+            <ToggleButton
+              active={distanceFormat === 'kilometers'}
+              onClick={() => toggleDistanceFormat('kilometers')}
+            >
+              Kilometers
+            </ToggleButton>
+            <ToggleButton
+              active={distanceFormat === 'miles'}
+              onClick={() => toggleDistanceFormat('miles')}
+            >
+              Miles
+            </ToggleButton>
+          </ToggleButtonGroup>
+         </ContentSection>
+         <ContentSection>
+          <h3>Temperature Formatting</h3>
+          <ToggleButtonGroup>
+            <ToggleButton
+              active={temperatureFormat === '°F'}
+              onClick={() => toggleTemperatureFormat('°F')}
+            >
+              °F
+            </ToggleButton>
+            <ToggleButton
+              active={temperatureFormat === '°C'}
+              onClick={() => toggleTemperatureFormat('°C')}
+            >
+              °C
+            </ToggleButton>
+          </ToggleButtonGroup>
+         </ContentSection>
+        </MainContent>
+    </Container>
   );
-}
+};
+
+export default Dashboard;
